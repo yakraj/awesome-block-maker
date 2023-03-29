@@ -1,0 +1,126 @@
+<html dir="ltr" lang="en" darkmode="">
+  <head>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js"></script>
+  </head>
+  <style>
+    .delete-button {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px;
+      font-weight: bold;
+      color: #fff;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      margin: 5px;
+      background: red;
+      cursor: pointer;
+      /* border: 1px solid red; */
+      right: 0px;
+      top: 0px;
+      position: absolute;
+      box-shadow: rgb(255, 255, 255) 0px 0px 5px,
+        rgb(255, 255, 255) 0px 0px 10px;
+    }
+
+    .rectangle-blocks {
+      background: grey;
+      border: 1px solid red;
+      position: absolute;
+      box-shadow: rgb(255, 255, 255) 0px 0px 5px,
+        rgb(255, 255, 255) 0px 0px 10px;
+      top: 141px;
+      left: 123px;
+      height: 49.5531%;
+      width: 37.1761%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+      color: #fff;
+      font-weight: bold;
+      overflow: hidden;
+    }
+    .guide-rectangle {
+      position: absolute;
+      height: 0px;
+      width: 0px;
+      background: grey;
+      border: 1px solid red;
+      box-shadow: 0 0 5px #fff, 0 0 10px #fff;
+      top: 304px;
+      z-index: 999;
+      left: 165px;
+      pointer-events: none;
+    }
+  </style>
+  <body>
+    <div id="main-container">
+      <div id="rectangle" class="guide-rectangle"></div>
+    </div>
+  </body>
+  <script>
+    var mainContainer = document.getElementById("main-container");
+    var rectangle = document.getElementById("rectangle");
+    let TopPosition = 0;
+    let LeftPosition = 0;
+    let Counter = 0;
+    let LastTopPosition = 0;
+    let LastLeftPosition = 0;
+
+    window.addEventListener("mousedown", function (e) {
+      Counter++;
+      var rect = document.createElement("div");
+      var id_name = "container" + Counter;
+      rect.setAttribute("id", id_name);
+      rect.innerHTML = id_name;
+      var close = document.createElement("div");
+      close.innerHTML = "X";
+      close.setAttribute("class", "delete-button");
+      rect.setAttribute("class", "rectangle-blocks");
+
+      close.onclick = function () {
+        var canRemove = document.getElementById(id_name);
+        canRemove.remove();
+      };
+
+      rect.appendChild(close);
+      function handleMouseMove(ev) {
+        rectangle.style.height = ev.clientY - TopPosition + "px";
+        rectangle.style.width = ev.clientX - LeftPosition + "px";
+        rect.style.height =
+          (ev.clientY - TopPosition) / (window.innerHeight / 100) + "%";
+        rect.style.width =
+          (ev.clientX - LeftPosition) / (window.innerWidth / 100) + "%";
+      }
+
+      TopPosition = e.clientY;
+      LeftPosition = e.clientX;
+      rect.style.top = e.clientY / (window.innerHeight / 100) + "%";
+      rect.style.left = e.clientX / (window.innerWidth / 100) + "%";
+
+      rectangle.style.top = e.clientY + "px";
+      rectangle.style.left = e.clientX + "px";
+      window.addEventListener("mousemove", handleMouseMove);
+
+      window.addEventListener("mouseup", function (e) {
+        LastTopPosition = e.clientY;
+        LastLeftPosition = e.clientX;
+
+        // here the image can be added
+
+        e.clientY - TopPosition > 10 && e.clientX - LeftPosition > 10
+          ? mainContainer.appendChild(rect)
+          : rect.remove();
+
+        rectangle.style.height = 0 + "px";
+        rectangle.style.width = 0 + "px";
+        rect = null;
+        window.removeEventListener("mousemove", handleMouseMove);
+      });
+    });
+  </script>
+</html>
